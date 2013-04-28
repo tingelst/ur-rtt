@@ -1,0 +1,60 @@
+#include "URRealTime-component.hpp"
+#include <rtt/Component.hpp>
+#include <rtt/Activity.hpp>
+#include <iostream>
+
+// socket includes
+#include <cstring>      // Needed for memset
+#include <sys/socket.h> // Needed for the socket functions
+#include <netdb.h>      // Needed for the socket functions
+#include <netinet/in.h>
+
+
+
+URRealTime::URRealTime(std::string const& name) : TaskContext(name){
+  std::cout << "URRealTime constructed Lars !" <<std::endl;
+}
+
+bool URRealTime::configureHook(){
+
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    bzero(&servaddr, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = inet_addr("localhost");
+    servaddr.sin_port = htons(5003);
+    connect(sockfd, (struct sockaddr*) &servaddr, sizeof(servaddr));
+
+  std::cout << "URRealTime configured lars !" <<std::endl;
+  return this->setPeriod(0.1);
+}
+
+bool URRealTime::startHook(){
+  std::cout << "URRealTime started LRS !" <<std::endl;
+  return true;
+}
+
+void URRealTime::updateHook(){
+  std::cout << "URRealTime executes updateHook !" <<std::endl;
+}
+
+void URRealTime::stopHook() {
+  std::cout << "URRealTime executes stopping !" <<std::endl;
+}
+
+void URRealTime::cleanupHook() {
+  std::cout << "URRealTime cleaning up !" <<std::endl;
+}
+
+/*
+ * Using this macro, only one component may live
+ * in one library *and* you may *not* link this library
+ * with another component library. Use
+ * ORO_CREATE_COMPONENT_TYPE()
+ * ORO_LIST_COMPONENT_TYPE(URRealTime)
+ * In case you want to link with another library that
+ * already contains components.
+ *
+ * If you have put your component class
+ * in a namespace, don't forget to add it here too:
+ */
+ORO_CREATE_COMPONENT(URRealTime)
