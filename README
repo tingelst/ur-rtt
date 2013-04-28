@@ -1,1 +1,4 @@
-README
+Orocos RTT component for real-time control of the Universal Robots UR5
+
+
+git clone https://github.com/tingelst/ur-rtt.git URRealTime
