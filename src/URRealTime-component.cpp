@@ -7,7 +7,17 @@
 URRealTime::URRealTime(std::string const& name) :
     TaskContext(name),
     host("127.0.0.1"),
-    port(5002){
+    port(5002),
+    q_act_std(6,0),
+    qdot_act_std(6,0),
+    q_std(6,0) {
+        //OutputPort
+        this->ports()->addPort("URRTTActualJointPosition", q_from_robot);
+        q_from_robot.setDataSample(q_act_std);
+        this->ports()->addPort("URRTTActualJointVelocity", qdot_from_robot);
+        q_from_robot.setDataSample(qdot_act_std);
+        //InputPort
+        this->ports()->addPort("URRTTDesiredJointPosition", q_to_robot);
   std::cout << "URRealTime constructed!" <<std::endl;
 }
 
@@ -24,10 +34,17 @@ bool URRealTime::startHook(){
 
 void URRealTime::updateHook(){
     recvPosition();
+    for (unsigned int i = 0; i < 6; i++){
+        q_act_std[i] = reply_packet_.q[i];
+    }
+    q_from_robot.write(q_act_std);
 
-    reply_packet_.q[2] += 0.005;
+
     // here comes the position manipulation
-
+    q_to_robot.read(q_std);
+    for (unsigned int i = 0; i < 6; i++){
+        reply_packet_.q[i] = q_std[i];
+    }
     sendPosition();
     this->getActivity()->trigger();
   //std::cout << "URRealTime executes updateHook !" <<std::endl;

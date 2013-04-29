@@ -26,6 +26,18 @@ class URRealTime : public RTT::TaskContext{
     char buf[BUFSIZE];
     struct sockaddr_in servaddr;
 
+    // output ports
+    RTT::OutputPort<std::vector<double> > q_from_robot;
+    RTT::OutputPort<std::vector<double> > qdot_from_robot;
+    // input ports
+    RTT::InputPort<std::vector<double> > q_to_robot;
+
+
+    // joint vectors
+    std::vector<double> q_act_std; // actual joint position vector
+    std::vector<double> qdot_act_std; //actual joint velocity vector
+    std::vector<double> q_std; //desired joint vector
+
     // removes memory padding at compile time and ensures that
     // sizeof(outPacketStruct) = 53
     #pragma pack(1)
