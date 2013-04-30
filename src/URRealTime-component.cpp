@@ -40,6 +40,8 @@ void URRealTime::updateHook(){
     q_from_robot.write(q_act_std);
 
 
+
+
     // here comes the position manipulation
     q_to_robot.read(q_std);
     for (unsigned int i = 0; i < 6; i++){
@@ -47,7 +49,6 @@ void URRealTime::updateHook(){
     }
     sendPosition();
     this->getActivity()->trigger();
-  //std::cout << "URRealTime executes updateHook !" <<std::endl;
 }
 
 void URRealTime::stopHook() {
